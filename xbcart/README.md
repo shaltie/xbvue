@@ -20,5 +20,11 @@ yarn build
 yarn lint
 ```
 
+### Start Json-server
+```
+json-server --watch data.json 
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
