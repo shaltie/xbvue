@@ -1,16 +1,48 @@
 <template>
   <span>
-    <strong>{{ toRubbles | priceBeautifier }}</strong> руб.
+    <strong class="rubbles-price-box" @click="clicked" :class="{priceIsUp: highlightUp, priceIsDown: highlightDown}">{{ toRubbles | priceBeautifier }}</strong> руб.
   </span>
 </template>
 
 <script>
 export default {
   props: ['price'],
+  data () {
+    return {
+      highlightUp: false,
+      highlightDown: false
+    }
+  },
   computed: {
     toRubbles () {
       return this.$store.getters.getRubblesPrice(this.price)
     }
+  },
+  methods: {
+    clicked () {
+      this.highlightUp = true
+    }
+  },
+  watch: {
+    rateIsChanged: function (val) {
+      this.fullName = val + ' ' + this.lastName
+    }
   }
 }
 </script>
+
+<style scoped>
+  .rubbles-price-box{
+    padding: 2px 5px;
+    border-radius: 20px;
+    background: rgba(240, 52, 52, 0);
+  }
+  .priceIsUp {
+    background: rgba(240, 52, 52, 0.2);
+    transition: background 2s;
+  }
+  .priceIsDown {
+    background: rgba(123, 239, 178, 0.2);
+    transition: background 2s;
+  }
+</style>

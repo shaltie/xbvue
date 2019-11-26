@@ -1,17 +1,17 @@
 <template>
   <v-expansion-panels multiple
-                      v-model="items"
+                      v-model="getGoods"
   >
     <v-expansion-panel
       v-for="(group,i) in getGoods"
-      :key="i"
+      :key="`itemsGroup-${i}`"
     >
       <v-expansion-panel-header  class="align-center">{{ group.title }}</v-expansion-panel-header>
       <v-expansion-panel-content>
 
         <v-list>
-          <template  v-for="(item,ii) in group.goods">
-            <v-list-item :key="i+'-'+ii">
+          <template  v-for="(item, ii) in group.goods">
+            <v-list-item :key="`orderItem-${item.id}`">
               <v-row>
                 <v-col
                   cols="12"
@@ -42,7 +42,7 @@
                 </v-col>
               </v-row>
             </v-list-item>
-            <v-divider :key="ii"></v-divider>
+            <v-divider :key="`orderItemDevider-${item.id}`" v-if="ii !== group.goods.length - 1"></v-divider>
           </template>
         </v-list>
       </v-expansion-panel-content>
@@ -54,14 +54,11 @@
 import RubblePrice from './ui/RubblePrice'
 
 export default {
-  data: () => ({
-    items: [...Array(5).keys()], // Vuetify asks to add keys for each expanded panel in array
-    data: null,
-    names: null,
-    combinedData: null,
-    itemsToCart: 1,
-    itemsAddedToCartCount: 0
-  }),
+  data () {
+    return {
+      groupItemsCount: null // Vuetify asks to add keys for each expanded panel in array
+    }
+  },
   computed: {
     getGoods () {
       return this.$store.getters.getGroupedGoods
@@ -71,6 +68,9 @@ export default {
     addToCart (id) {
       this.$store.dispatch('addToCart', id)
     }
+  },
+  created () {
+    this.groupItemsCount = this.$store.getters.getGroupedGoods
   },
   components: {
     appRubblePrice: RubblePrice

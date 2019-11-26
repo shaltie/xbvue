@@ -1,4 +1,9 @@
 import Vue from 'vue'
+import VueResource from 'vue-resource'
+
+Vue.use(VueResource)
+
+Vue.http.options.root = 'http://localhost:3000/'
 
 /*
   Get Data from data.json
