@@ -49,14 +49,14 @@
                     <v-btn
                       icon ripple
                       :disabled="item.quantity <= 1"
-                      @click="decrement(item.id)">
+                      @click="decrement(item)">
                       <v-icon>remove</v-icon>
                     </v-btn>
                     <span>{{ item.quantity }}</span>
                     <v-btn
                       icon ripple
                       :disabled="item.quantity >= item.P"
-                      @click="increment(item.id)">
+                      @click="increment(item)">
                       <v-icon>add</v-icon>
                     </v-btn>
                   </v-col>
@@ -97,7 +97,7 @@
 
 <script>
 import RubblePrice from './ui/RubblePrice'
-
+import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -105,11 +105,13 @@ export default {
     }
   },
   methods: {
-    increment (id) {
-      this.$store.dispatch('addToCart', id)
+    ...mapActions(['addToCart']),
+    increment (item) {
+      this.addToCart(item)
+      // this.$store.dispatch('addToCart', id)
     },
-    decrement (id) {
-      this.$store.dispatch('removeFromCart', id)
+    decrement (item) {
+      this.$store.dispatch('removeFromCart', item)
     },
     removeFromCart (id) {
       this.$store.dispatch('removeGroupFromCart', id).then(() => {
@@ -120,6 +122,8 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['getGoodsInCart', 'getItemsNumber', 'getTotalCount'])
+    /*
     getGoodsInCart () {
       return this.$store.getters.getGoodsInCart
     },
@@ -129,6 +133,7 @@ export default {
     getTotalCount () {
       return this.$store.getters.getTotalCount
     }
+    */
   },
   components: {
     appRubblePrice: RubblePrice

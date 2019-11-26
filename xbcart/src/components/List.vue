@@ -1,6 +1,7 @@
 <template>
-  <v-expansion-panels multiple
-                      v-model="getGoods"
+  <v-expansion-panels
+    v-if="XXXX.length"
+    multiple v-model="XXXX"
   >
     <v-expansion-panel
       v-for="(group,i) in getGoods"
@@ -36,7 +37,7 @@
                 >
                   <v-btn
                     icon ripple
-                    @click="addToCart(item.id)">
+                    @click="addToCart(item)">
                     <v-icon color="green lighten-1">add_shopping_cart</v-icon>
                   </v-btn>
                 </v-col>
@@ -56,6 +57,7 @@ import RubblePrice from './ui/RubblePrice'
 export default {
   data () {
     return {
+      XXXX: [],
       groupItemsCount: null // Vuetify asks to add keys for each expanded panel in array
     }
   },
@@ -64,9 +66,14 @@ export default {
       return this.$store.getters.getGroupedGoods
     }
   },
+  watch: {
+    getGoods (newValue) {
+      this.XXXX = Array.from({ length: Object.entries(this.getGoods).length }).map((_, i) => i)
+    }
+  },
   methods: {
-    addToCart (id) {
-      this.$store.dispatch('addToCart', id)
+    addToCart (item) {
+      this.$store.dispatch('addToCart', item)
     }
   },
   created () {

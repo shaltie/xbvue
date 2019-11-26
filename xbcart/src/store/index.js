@@ -15,7 +15,6 @@ function groupData (data) {
     }
     result[item.G].goods.push(item)
   })
-  console.log('griuped', result)
   return result
 }
 
@@ -54,7 +53,6 @@ function combineData (data, names) {
     v.id = v.T
     return v
   })
-  console.log('combined', combined)
   return combined
 }
 
@@ -68,11 +66,18 @@ export default new Vuex.Store({
     loadGoods (state, payload) {
       state.goods = payload
     },
-    addToCart (state, id) {
-      const cartItem = state.goodIdsInCart.find(item => item.id === id)
-      if (cartItem) {
-        cartItem.quantity++
-        cartItem.totalUsdPrice = totalCountItem(state, id)
+    addToCart (state, item) {
+      const { id, C } = item
+      const cartItemIndex = state.goodIdsInCart.findIndex(item => item.id === id)
+      if (cartItemIndex !== -1) {
+        const cartItem = state.goodIdsInCart[cartItemIndex]
+        const newQuantity = cartItem.quantity + 1
+        const updatedCartItem = {
+          ...cartItem,
+          quantity: newQuantity,
+          totalUsdPrice: Number(newQuantity * C)
+        }
+        Vue.set(state.goodIdsInCart, cartItemIndex, updatedCartItem)
       } else {
         state.goodIdsInCart.push({
           id,
@@ -81,11 +86,17 @@ export default new Vuex.Store({
         })
       }
     },
-    removeFromCart (state, id) {
-      const cartItem = state.goodIdsInCart.find((item, index) => item.id === id)
-      if (cartItem) {
-        cartItem.quantity--
-        cartItem.totalUsdPrice = totalCountItem(state, id)
+    removeFromCart (state, item) {
+      const { id, C } = item
+      const cartItemIndex = state.goodIdsInCart.findIndex((item, index) => item.id === id)
+      if (cartItemIndex !== -1) {
+        const cartItem = state.goodIdsInCart[cartItemIndex]
+        const updatedCart = {
+          ...cartItem,
+          quantity: cartItem.quantity - 1,
+          totalUsdPrice: (cartItem.quantity - 1) * C
+        }
+        Vue.set(state.goodIdsInCart, cartItemIndex, updatedCart)
       }
     },
     removeGroupFromCart (state, id) {
@@ -107,8 +118,8 @@ export default new Vuex.Store({
 
       commit('loadGoods', combinedData)
     },
-    addToCart ({ commit, getters }, id) {
-      commit('addToCart', id)
+    addToCart ({ commit, getters }, item) {
+      commit('addToCart', item)
     },
     removeFromCart ({ commit }, id) {
       commit('removeFromCart', id)
@@ -132,9 +143,6 @@ export default new Vuex.Store({
     },
     getTotalCount (state) {
       return totalCount(state)
-    },
-    getRubblesPrice (state) {
-      return price => state.USDRUBRate * price
     },
     getRUBUSDRate (state) {
       return state.USDRUBRate

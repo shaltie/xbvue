@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     toRubbles () {
-      return this.$store.getters.getRubblesPrice(this.price)
+      return this.$store.getters.getRUBUSDRate * this.price
     }
   },
   methods: {
@@ -24,8 +24,14 @@ export default {
     }
   },
   watch: {
-    rateIsChanged: function (val) {
-      this.fullName = val + ' ' + this.lastName
+    toRubbles (newPrice, previousPrice) {
+      if (newPrice > previousPrice) {
+        this.highlightUp = false
+        this.highlightDown = true
+      } else {
+        this.highlightUp = true
+        this.highlightDown = false
+      }
     }
   }
 }
